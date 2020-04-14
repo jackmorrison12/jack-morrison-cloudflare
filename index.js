@@ -11,15 +11,24 @@ async function handleRequest(request) {
     let json = await response.json();
     let variants = json.variants;
 
-    let variant = Math.random() < 0.5 ? 'variant1' : 'variant2';
+    const cookie = request.headers.get('cookie');
+    let variant = ''
+    if (cookie && cookie.includes(`jack=variant1`)) {
+      variant = "variant1"
+    } else if (cookie && cookie.includes(`jack=variant2`)) {
+      variant = "variant2"
+    } else {
+      variant = Math.random() < 0.5 ? 'variant1' : 'variant2';
+    }
     let url = variant == 'variant1' ? variants[0] : variants[1];
     let varResponse = await fetch(url);
 
     if (varResponse.ok) {
       let text = await varResponse.text();
 
+      // Set the cookie to persist for a day from last site load
       response =  new Response(text, {
-        headers: { 'content-type': 'text/html' },
+        headers: { 'content-type': 'text/html' , 'Set-Cookie': `jack=${variant}; Max-Age=86400;`},
       });
 
       return new HTMLRewriter().on('*', new ElementHandler(variant)).transform(response);
