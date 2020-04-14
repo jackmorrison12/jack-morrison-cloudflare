@@ -18,9 +18,11 @@ async function handleRequest(request) {
     if (varResponse.ok) {
       let text = await varResponse.text();
 
-      return new Response(text, {
+      response =  new Response(text, {
         headers: { 'content-type': 'text/html' },
       });
+
+      return new HTMLRewriter().on('*', new ElementHandler(variant)).transform(response);
     }
 
   } else {
@@ -29,4 +31,30 @@ async function handleRequest(request) {
     })
   }
 
+}
+
+class ElementHandler {
+
+  constructor(variant) {
+    this.variant = variant
+  }
+
+  element(element) {
+    if (element.tagName == 'title') {
+      this.variant == 'variant1' ? element.setInnerContent('Jack\'s Personal Webpage') : element.setInnerContent('Jack\'s Github');
+    }
+
+    if (element.tagName == 'h1' && element.getAttribute('id') == 'title') {
+      this.variant == 'variant1' ? element.setInnerContent('Jack\'s Personal Webpage') : element.setInnerContent('Jack\'s Github');
+    }
+
+    if (element.tagName == 'p' && element.getAttribute('id') == 'description') {
+      this.variant == 'variant1' ? element.setInnerContent('Follow the link to find lots of interesting information on my projects!') : element.setInnerContent('Follow the link to see the code powering all of my projects!');
+    }
+
+    if (element.tagName == 'a' && element.getAttribute('id') == 'url') {
+      this.variant == 'variant1' ? element.setInnerContent('Go to jackmorrison.xyz') && element.setAttribute('href','https://jackmorrison.xyz') : element.setInnerContent('Go to GitHub') && element.setAttribute('href','http://github.com/jackmorrison12/');
+    }
+    
+  }
 }
