@@ -10,18 +10,21 @@ async function handleRequest(request) {
   if (response.ok) {
     let json = await response.json();
     let variants = json.variants;
+
     let variant = Math.random() < 0.5 ? 'variant1' : 'variant2';
     let url = variant == 'variant1' ? variants[0] : variants[1];
-
     let varResponse = await fetch(url);
+
     if (varResponse.ok) {
       let text = await varResponse.text();
+
       return new Response(text, {
         headers: { 'content-type': 'text/html' },
       });
     }
+
   } else {
-    return new Response('No response', {
+    return new Response('No variants returned', {
       headers: { 'content-type': 'text/plain' },
     })
   }
