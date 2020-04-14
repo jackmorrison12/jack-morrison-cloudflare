@@ -2,7 +2,6 @@ addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request))
 })
 /**
- * Respond with hello worker text
  * @param {Request} request
  */
 async function handleRequest(request) {
@@ -13,6 +12,8 @@ async function handleRequest(request) {
 
     const cookie = request.headers.get('cookie');
     let variant = ''
+
+    // Find cookie if it exists, otherwise create it
     if (cookie && cookie.includes(`jack=variant1`)) {
       variant = "variant1"
     } else if (cookie && cookie.includes(`jack=variant2`)) {
@@ -20,6 +21,7 @@ async function handleRequest(request) {
     } else {
       variant = Math.random() < 0.5 ? 'variant1' : 'variant2';
     }
+
     let url = variant == 'variant1' ? variants[0] : variants[1];
     let varResponse = await fetch(url);
 
@@ -42,6 +44,7 @@ async function handleRequest(request) {
 
 }
 
+// Create an element handler to personalise site, depending on value of 'variant'
 class ElementHandler {
 
   constructor(variant) {
