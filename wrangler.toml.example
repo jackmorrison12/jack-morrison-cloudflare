@@ -1,0 +1,10 @@
+name = "cloudflare-jack-morrison"
+type = "javascript"
+account_id = "" # Removed for anonymisation
+workers_dev = true
+
+[env.production]
+# The ID of your domain you're deploying to
+zone_id = "" # Removed for anonymisation
+# The route pattern your Workers application will be served at
+route = "https://jackmorrison.xyz/cloudflare"
